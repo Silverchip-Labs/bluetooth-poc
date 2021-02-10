@@ -6,14 +6,16 @@ import { BleManager } from 'react-native-ble-plx';
 export default function App() {
   const [btState, setBTstate] = useState({});
   useEffect(() => {
-    const scannerInterval = setInterval(handleScan, 5000);
+    const scannerInterval = setInterval(handleScan, 3000);
     
     return () => {
       clearInterval(scannerInterval);
     };
   }, []);
 
-  const devices = Object.values(btState).sort((a, b) => b.rssi - a.rssi);
+  const devices = Object.values(btState)
+    .filter(x => x.name?.toLowerCase().includes('beacon'))
+    .sort((a, b) => b.rssi - a.rssi);
   const closest = devices[0];
   return (
     <View style={styles.container}>
@@ -54,7 +56,7 @@ async function handleScan() {
     setTimeout(() => {
       manager.stopDeviceScan();
       manager.destroy();
-    }, 3000)
+    }, 2000)
   };
 
 function logDeviceScanned(err, device) {
