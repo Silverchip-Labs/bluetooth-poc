@@ -17,12 +17,33 @@ export default function App() {
     .filter(x => x.name?.toLowerCase().includes('beacon'))
     .sort((a, b) => b.rssi - a.rssi);
   const closest = devices[0];
+  const isOffice = closest?.name?.toLowerCase().includes('office');
   return (
     <View style={styles.container}>
-      {!!closest &&<Text>Closest device: {closest.name || closest.id}</Text> }
-      {devices.map(device => <Text key={device.id}>
-        {device.name || device.id} : {rssiToSignalStrength(device.rssi)} ({device.rssi})
+      <View>
+      {!!closest &&<Text style={{fontSize: 40, fontWeight: '400', textAlign: 'center'}}>Detected Room</Text> }
+      {!!closest &&<Text style={{fontSize: 40, fontWeight: '200', textAlign: 'center'}}>{closest.name || closest.id}</Text> }
+      </View>
+      <View>
+      <View style={{backgroundColor: isOffice ? 'lightpink' : 'white', height: 300, width: 200,  borderStyle: 'solid', borderColor: 'black', borderWidth: 2}}>
+        <Text style={{color: 'black', textAlign: 'center', marginVertical: 75, fontSize: 50, fontWeight: '200'}}>
+          Office
+        </Text>
+        <View style={{backgroundColor: 'red', height: 2, width: 30, marginLeft: 150, position: 'absolute', bottom: 0}}></View>
+      </View>
+      <View style={{backgroundColor: !isOffice ? 'lightpink' :'white', height: 150, width: 200, borderStyle: 'solid', borderColor: 'black', borderWidth: 2}}>
+        <View style={{backgroundColor: 'red', height: 2, width: 30, marginLeft: 150}}></View>
+        <Text style={{color: 'black', textAlign: 'center', marginVertical: 30, fontSize: 50, fontWeight: '200'}}>
+          Meeting
+        </Text>
+      </View>
+      </View>
+      <View>
+      <Text style={{fontWeight: '500', fontSize: 20, textAlign: 'center', marginBottom: 10}}>Nearby rooms</Text>
+      {devices.slice(1).map(device => <Text key={device.id} style={{fontWeight: '200', textAlign: 'justify', fontSize: 18}}>
+        {device.name || device.id} 
       </Text>)}
+      </View>
       <StatusBar style="auto" />
     </View>
   );
@@ -30,9 +51,9 @@ export default function App() {
 
 function rssiToSignalStrength (rssi) {
   if (!rssi) return 'n/a';
-  if (rssi > -50) return 'strong!';
-  if (rssi > -70) return 'medium!';
-  if (rssi > -90) return 'weak!';
+  if (rssi > -50) return 'strong';
+  if (rssi > -70) return 'medium';
+  if (rssi > -90) return 'weak';
   return 'very weak!';
 }
 
@@ -73,6 +94,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
+    marginVertical: 100
   },
 });
